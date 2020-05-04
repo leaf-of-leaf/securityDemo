@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Please sign in</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <link href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css" rel="stylesheet" crossorigin="anonymous"/>
+    <script src="js/jquery.min.js" type="text/javascript"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+</head>
+<body>
+<div class="container">
+<!--    <form class="form-signin">-->
+        <h2 class="form-signin-heading">请登录</h2>
+        <p>
+            <label for="username" class="sr-only">Username</label>
+            <input type="text" id="username" name="username" class="form-control" placeholder="Username" required autofocus>
+        </p>
+        <p>
+            <label for="password" class="sr-only">Password</label>
+            <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+        </p>
+        <p>
+            <label class="sr-only">code</label>
+            <input type="text" name="ImageCode" class="form-control" placeholder="Code" required>
+            <img src="/code/img" width="50%">
+        </p>
+        <input type="checkbox" name="remember-me"/> 记住我
+        <input name="_csrf" type="hidden" value="e1e3db85-9e4c-4dcb-82b4-865aff7410b2" />
+        <button name="loginBtn" class="loginBtn btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+<!--    </form>-->
+    <br>
+    <br>
+<!--    <form class="login-page" action="/login/mobile" method="post">-->
+        <div class="form">
+            <h3>短信验证码登录</h3>
+            <input type="text" placeholder="手机号" name="mobile" value="17777777777" required="required"/>
+            <span style="display: inline">
+            <input type="text" name="smsCode" placeholder="短信验证码" style="width: 50%;"/>
+            <a href="/code/sms?mobile=17777777777">发送验证码</a>
+        </span>
+            <button type="submit">登录</button>
+        </div>
+<!--    </form>-->
+</div>
+<script>
+    $.ajaxPrefilter(function( options, originalOptions, jqXHR ) {
+        options.xhrFields = {
+            withCredentials: true
+        }
+    });
+    $(".loginBtn").click(function () {
+        var username = $("input[name='username']").val();
+        var password = $("input[name='password']").val();
+        var ImageCode = $("input[name='ImageCode']").val();
+        // var uuid = document.cookie;
+        // console.info(document.cookie);
+        // alert(uuid);
+        // $.ajax({
+        //     type: "post",
+        //     url:"/login",
+        //     async:true,
+        //     data:{username:username,password:password,ImageCode:ImageCode,uuid:$.cookie("uuid")},
+        //     dataType:"json",
+        //     beforeSend: function(xhr) {
+        //         xhr.withCredentials = true;
+        //     },
+        //     crossDomain:true,
+        //     xhrFields: {
+        //         withCredentials: true
+        //     },
+        //     success: function (xhr) {
+        //         var local = window.localStorage;
+        //         var authorization = xhr.getResponseHeader("Authorization");
+        //         // var href = xhr.getResponseHeader("requesturl");
+        //         local.setItem("Authorization", authorization);
+        //         // location.href = href;
+        //         alert(local.getItem("Authorization"));
+        //     },
+        //     error:function (data) {
+        //         var a=JSON.stringify(data);
+        //         alert(a);
+        //     }
+        // });
+        $.post("/login", {username:username,password:password,ImageCode:ImageCode}, function (data,status,xhr) {
+            if(status == "success"){
+                var local = window.localStorage;
+                var authorization = xhr.getResponseHeader("Authorization");
+                local.setItem("authorization", authorization);
+                alert(window.localStorage.getItem("authorization"));
+            }
+        })
+        // $.ajax({
+        //     url:"/hello",
+        //     type:"GET",
+        //     beforeSend: function(xhr){xhr.setRequestHeader('Authorization', window.localStorage.Authorization)},//这里设置header
+        //     success: function() {}
+        // })
+    })
+
+</script>
+</body>
+</html>
